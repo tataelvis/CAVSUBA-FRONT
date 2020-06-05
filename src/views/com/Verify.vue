@@ -8,17 +8,18 @@
     <qrcode-capture @decode="onDecode"></qrcode-capture>
   </div>
     <br><br><br>
-    <p class="text-success text-center" v-if="isAuthentic">
-      <i class="fa fa-check fa-5x" aria-hidden="true"></i>
-          <br>
-        DOCUMENT IS AUTHENTIC!
-    </p>
-  <p class="text-danger" v-else-if="isAuthentic === false">FAKE DOCUMENT.</p>
-  <h3 class="text-danger" v-else-if="message">UNKNOWN COMMUNIQUE.</h3>
+
+  <p class="text-danger" v-if="isAuthentic === false">FAKE DOCUMENT.</p>
 <h1>COMMUNIQUE VERIFICATION</h1>
 <br>
 <h2 class="text-primary">Upload a communique for verification</h2>
 <br>
+    <h3 class="text-success" v-if="isAuthentic">
+      <!--<i class="fa fa-check fa-5x" aria-hidden="true"></i>-->
+          <br>
+        RESULT: DOCUMENT IS AUTHENTIC!
+    </h3>
+  <h3 class="text-danger" v-if="message">RESULT: UNKNOWN COMMUNIQUE.</h3><br>
 <pdf
  style="display: inline-block; width: 32%"
  @loaded="displayContent"
@@ -81,7 +82,7 @@ export default {
       pdfContent: '',
       pdfUploaded: false,
       qrcode: null,
-      API_HOST: 'http://127.0.0.1:3000'
+      API_HOST: ' http://127.0.0.1:3000'
     };
   },
   methods: {
