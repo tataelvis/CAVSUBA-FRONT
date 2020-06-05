@@ -45,7 +45,7 @@ export default {
     UserService.logout()
     commit(AUTHENTICATION_MUTATIONS.reset_state)
     // commit(`profile/${PROFILE_MUTATIONS.reset_state}`, null, { root: true })
-    router.push({ name: 'login' })
+    router.push('/login')
   },
 
   [AUTHENTICATION_ACTIONS.clear_msg] ({ commit }) {

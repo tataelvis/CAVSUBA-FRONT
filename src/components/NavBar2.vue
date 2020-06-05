@@ -17,8 +17,11 @@
           <li class="current">
             <a href="/">Home</a>
           </li>
-          <li class="current">
+          <li class="current" v-if="!user">
             <a href="/login">Login</a>
+          </li>
+          <li class="current" v-else>
+            <a @click="logout">Logout</a>
           </li>
           <li class="current">
             <a href="/verify">Communique Verification</a>
@@ -31,7 +34,20 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+import { AUTHENTICATION_ACTIONS } from '../store/actions.type';
+
 export default {
-  name: 'NavBar2'
+  name: 'NavBar2',
+  computed: {
+    ...mapGetters({
+      user: 'auth/user'
+    })
+  },
+  methods: {
+    logout () {
+      this.$store.dispatch(`auth/${AUTHENTICATION_ACTIONS.logout}`)
+    }
+  }
 };
 </script>

@@ -60,7 +60,7 @@
 
           <div class="content-panel">
             <div class="content-header-wrapper">
-              <h2 class="title">My Drive</h2>
+              <h2 class="title">AUTHENTICATING COMMUNIQUES</h2>
               <div class="actions">
                 <button class="btn btn-success">
                   <i class="fa fa-plus"></i> Upload New Item

@@ -74,7 +74,7 @@ const UserService = {
 
   logout() {
     ApiService.removeHeader()
-    ApiService.unmount401Interceptor()
+    // ApiService.unmount401Interceptor()
   }
 }
 

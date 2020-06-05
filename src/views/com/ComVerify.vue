@@ -2,7 +2,7 @@
   <div>
 <section id="showcase">
       <div class="container-cav">
-        <h1>Welcome To UBa COMMUNIQUE AUTHENTICTION AND VERIFICATION  SYSTEM</h1>
+        <h1 style="color:#066A75;">Welcome To UBa COMMUNIQUE AUTHENTICTION AND VERIFICATION  SYSTEM</h1>
 
         <p></p>
       </div>
