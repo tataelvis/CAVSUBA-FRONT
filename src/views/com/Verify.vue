@@ -1,14 +1,14 @@
 <template>
 <div class="container">
-  <canvas id="RGBCanvas" width="500" height="500" v-show="false"></canvas>
   <div v-if="scan">
     <br><br>
+
     <qrcode-stream @decode="onDecode"></qrcode-stream><br>
     <qrcode-drop-zone @decode="onDecode"></qrcode-drop-zone><br>
     <qrcode-capture @decode="onDecode"></qrcode-capture>
+
   </div>
     <br><br><br>
-
   <p class="text-danger" v-if="isAuthentic === false">FAKE DOCUMENT.</p>
 <h1>COMMUNIQUE VERIFICATION</h1>
 <br>
@@ -19,20 +19,22 @@
           <br>
         RESULT: DOCUMENT IS AUTHENTIC!
     </h3>
-  <h3 class="text-danger" v-if="message">RESULT: UNKNOWN COMMUNIQUE.</h3><br>
+  <h3 class="text-danger" v-if="isAuthentic === false">RESULT: UNKNOWN COMMUNIQUE.</h3><br>
+
+<div>
+  <form method="post" :action="`${API_HOST}/test`" @submit.prevent="sendFile">
+    <input name="communique" type="file" id="communique"/><br><br>
+    <input type='submit' value='VERIFY' class="btn btn-primary btn-lg"/>
+  </form>
+</div>
 <pdf
  style="display: inline-block; width: 32%"
  @loaded="displayContent"
  :src="pdfContent"
- v-if="pdfUploaded"
  ref="pdfComponent"
 >
-</pdf><br><br>
-<input
-id="files"
-type="file"
-@change="handleFileChange"
-/><br><br>
+</pdf>
+<br>
 <h3>Steps to follow</h3>
 <ol>
  <li>
@@ -65,6 +67,7 @@ import pdf from 'vue-pdf';
 import axios from 'axios';
 import PDFJS from 'pdfjs-dist';
 import jsQR from "jsqr";
+// import verifyPDF from '@ninja-labs/verify-pdf';
 
 export default {
   name: 'Verify',
@@ -79,10 +82,10 @@ export default {
       scan: false,
       isAuthentic: null,
       message: '',
-      pdfContent: '',
+      pdfContent: null,
       pdfUploaded: false,
       qrcode: null,
-      API_HOST: 'http://127.0.0.1:3000'
+      API_HOST: 'http://127.0.0.1:3000',
     };
   },
   methods: {
@@ -115,7 +118,7 @@ export default {
     displayContent() {
       const self = this;
       let pageNum = 0;
-      this.$refs.pdfComponent.pdf.forEachPage(page => {
+      this.$refs.pdfComponent.pdf.getPage(1).then(page => {
         pageNum = pageNum + 1;
         if (pageNum = 1) {
         page.getOperatorList().then(function(ops) {
@@ -128,12 +131,11 @@ export default {
                 console.log('loading', arg);
                 imgsFound++;
                 const imgKey = arg[0];
-                if (imgsFound === 2) {
-                page.objs.get(imgKey, img => {
-                    console.log('BOOOM ==>', img.data);
-                    const imgRGBA = self.changeRGBToRGBA(img);
+               if (imgsFound === 2) {
+               page.objs.get(imgKey, img => {
+                    console.log('BOOOM ==>', img.toDataURL());
                     const result = jsQR(img.data, img.width, img.height);
-                    console.log('RESUlT ===>', imgRGBA);
+                    console.log('RESUlT ===>', result);
                     //new Uint8ClampedArray()
                 });
                 }
@@ -143,6 +145,41 @@ export default {
     });
 
     },
+
+    async sendFile() {
+      const input = document.getElementById('communique')
+      const file = input.files[0]
+      let reader = new FileReader();
+      let fileByteArray = [];
+      reader.readAsArrayBuffer(file);
+      reader.onloadend = function (evt) {
+      if (evt.target.readyState == FileReader.DONE) {
+       let arrayBuffer = evt.target.result,
+           array = new Uint8Array(arrayBuffer);
+       for (var i = 0; i < array.length; i++) {
+           fileByteArray.push(array[i]);
+        }
+       this.pdfContent = fileByteArray;
+        }
+        }
+      const formData = new FormData()
+      formData.append(input.id, file)
+      const response = await fetch(`${this.API_HOST}/test`, {
+           method: 'POST',
+           headers: {},
+           body: formData
+      }).then((response)=> {
+        if (!response.ok) {
+            throw Error(response.statusText);
+        }
+        return response;
+        }).then((response)=> {
+           this.isAuthentic = true;
+          }).catch(() => {
+            this.isAuthentic = false;
+          });
+      console.log(response);
+    }
   }
 }
 </script>

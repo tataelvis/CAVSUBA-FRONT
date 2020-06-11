@@ -1,5 +1,5 @@
 export const SignUpRoute = {
-  path: '/sign-up',
+  path: '/register',
   name: 'register',
   component: () => import('@/views/auth/Register'),
   meta: {

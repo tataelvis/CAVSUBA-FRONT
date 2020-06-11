@@ -8,17 +8,20 @@
         </h1>
       </div>
 
-      <div class="col-md-2 col-md-offset-1">
+      <div class="col-md-1">
         <img src="~@/assets/ubap.png" alt="logo-university of bamenda" class="image-responsive"/>
       </div>
 
-      <nav class="col-md-7">
+      <nav class="col-md-9">
         <ul class="pull-right">
           <li class="current">
             <a href="/">Home</a>
           </li>
           <li class="current" v-if="!user">
             <a href="/login">Login</a>
+          </li>
+          <li class="current" v-if="!user">
+            <a href="/register">Register</a>
           </li>
           <li class="current" v-else>
             <a @click="logout">Logout</a>
